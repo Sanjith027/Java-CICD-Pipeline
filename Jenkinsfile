@@ -5,10 +5,20 @@ pipeline {
     DOCKERHUB_CREDENTIALS = credentials('dockerhub')
   }
 
+  options {
+    skipDefaultCheckout(true)  // 👈 prevents default checkout
+  }
+
   stages {
     stage('Clean Workspace') {
       steps {
         cleanWs()
+      }
+    }
+
+    stage('Checkout Source') {
+      steps {
+        checkout scm  // 👈 manually do the git clone AFTER workspace is clean
       }
     }
 
