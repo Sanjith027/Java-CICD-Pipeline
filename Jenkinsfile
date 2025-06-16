@@ -6,12 +6,6 @@ pipeline {
   }
 
   stages {
-    stage('Checkout') {
-      steps {
-        git 'https://github.com/Sanjith027/Java-CICD-Pipeline.git'
-      }
-    }
-
     stage('Build with Maven') {
       steps {
         sh './mvnw clean package'
