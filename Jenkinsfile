@@ -6,8 +6,15 @@ pipeline {
   }
 
   stages {
+    stage('Clean Workspace') {
+      steps {
+        cleanWs()
+      }
+    }
+
     stage('Build with Maven') {
       steps {
+        sh 'chmod +x mvnw'
         sh './mvnw clean package'
       }
     }
