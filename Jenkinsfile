@@ -31,7 +31,7 @@ pipeline {
 
     stage('Build Docker Image') {
       steps {
-        sh 'docker build -t sanjith027/spring-petclinic .'
+        sh 'docker build -t sanjith27/spring-petclinic .'
       }
     }
 
@@ -40,7 +40,7 @@ pipeline {
         withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
           sh '''
             echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
-            docker push sanjith027/spring-petclinic
+            docker push sanjith27/spring-petclinic
           '''
         }
       }
