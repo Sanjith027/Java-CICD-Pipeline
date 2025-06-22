@@ -31,21 +31,22 @@ pipeline {
     }
 
     stage('Code Quality - SonarQube') {
-        steps {
-            withCredentials([string(credentialsId: 'my-sonarqube-token', variable: 'SONAR_TOKEN')]) {
-                withSonarQubeEnv("${SONARQUBE}") {
-                    sh """
-                        sonar-scanner \
-                          -Dsonar.projectKey=spring-petclinic \
-                          -Dsonar.sources=src \
-                          -Dsonar.java.binaries=target \
-                          -Dsonar.host.url=http://43.204.144.43:9000 \
-                          -Dsonar.token=$SONAR_TOKEN
-                    """
-                }
-            }
-        }
+      steps {
+        withCredentials([string(credentialsId: 'my-sonarqube-token', variable: 'SONAR_TOKEN')]) {
+          withSonarQubeEnv('SonarQube') {
+             sh '''
+                sonar-scanner \
+                 -Dsonar.projectKey=spring-petclinic \
+                  -Dsonar.sources=src \
+                  -Dsonar.java.binaries=target \
+                  -Dsonar.host.url=http://43.204.144.43:9000 \
+                  -Dsonar.token=$SONAR_TOKEN
+              '''
+      }
     }
+  }
+}
+
 
 
         stage('Build Docker Image') {
