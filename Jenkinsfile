@@ -2,12 +2,11 @@ pipeline {
     agent any
 
     environment {
-        SONARQUBE = 'SonarQube' // Matches the name in Jenkins System config
+        SONARQUBE = 'SonarQube' // Must match Jenkins SonarQube name
     }
 
     tools {
         maven 'Maven 3.9.6'
-        //sonarQubeScanner 'SonarScanner'
     }
 
     stages {
@@ -23,31 +22,29 @@ pipeline {
             }
         }
 
-            stage('Build with Maven') {
-        steps {
-            sh 'chmod +x mvnw'
-            sh './mvnw clean package -DskipTests -Dcheckstyle.skip=true'
+        stage('Build with Maven') {
+            steps {
+                sh 'chmod +x mvnw'
+                sh './mvnw clean package -DskipTests -Dcheckstyle.skip=true'
+            }
         }
-    }
 
-    stage('Code Quality - SonarQube') {
-      steps {
-        withCredentials([string(credentialsId: 'my-sonarqube-token', variable: 'SONAR_TOKEN')]) {
-          withSonarQubeEnv('SonarQube') {
-             sh '''
-                sonar-scanner \
-                 -Dsonar.projectKey=spring-petclinic \
-                  -Dsonar.sources=src \
-                  -Dsonar.java.binaries=target \
-                  -Dsonar.host.url=http://43.204.144.43:9000 \
-                  -Dsonar.token=$SONAR_TOKEN
-              '''
-      }
-    }
-  }
-}
-
-
+        stage('Code Quality - SonarQube') {
+            steps {
+                withCredentials([string(credentialsId: 'my-sonarqube-token', variable: 'SONAR_TOKEN')]) {
+                    withSonarQubeEnv('SonarQube') {
+                        sh '''
+                            sonar-scanner \
+                              -Dsonar.projectKey=spring-petclinic \
+                              -Dsonar.sources=src \
+                              -Dsonar.java.binaries=target \
+                              -Dsonar.host.url=http://43.204.144.43:9000 \
+                              -Dsonar.token=$SONAR_TOKEN
+                        '''
+                    }
+                }
+            }
+        }
 
         stage('Build Docker Image') {
             steps {
