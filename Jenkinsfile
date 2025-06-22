@@ -23,28 +23,30 @@ pipeline {
             }
         }
 
-        stage('Code Quality - SonarQube') {
-            steps {
-                withCredentials([string(credentialsId: 'my-sonarqube-token', variable: 'SONAR_TOKEN')]) {
-                    withSonarQubeEnv("${SONARQUBE}") {
-                        sh """
+            stage('Build with Maven') {
+        steps {
+            sh 'chmod +x mvnw'
+            sh './mvnw clean package -DskipTests'
+        }
+    }
+
+    stage('Code Quality - SonarQube') {
+        steps {
+            withCredentials([string(credentialsId: 'my-sonarqube-token', variable: 'SONAR_TOKEN')]) {
+                withSonarQubeEnv("${SONARQUBE}") {
+                    sh """
                         sonar-scanner \
                           -Dsonar.projectKey=spring-petclinic \
                           -Dsonar.sources=src \
                           -Dsonar.java.binaries=target \
-                          -Dsonar.login=$SONAR_TOKEN
-                        """
-                    }
+                          -Dsonar.host.url=http://<your-ec2-ip>:9000 \
+                          -Dsonar.token=$SONAR_TOKEN
+                    """
                 }
             }
         }
+    }
 
-        stage('Build with Maven') {
-            steps {
-                sh 'chmod +x mvnw'
-                sh './mvnw clean package -DskipTests'
-            }
-        }
 
         stage('Build Docker Image') {
             steps {
