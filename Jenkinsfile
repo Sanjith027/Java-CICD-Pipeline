@@ -39,7 +39,7 @@ pipeline {
                           -Dsonar.projectKey=spring-petclinic \
                           -Dsonar.sources=src \
                           -Dsonar.java.binaries=target \
-                          -Dsonar.host.url=http://<your-ec2-ip>:9000 \
+                          -Dsonar.host.url=http://43.204.144.43:9000 \
                           -Dsonar.token=$SONAR_TOKEN
                     """
                 }
